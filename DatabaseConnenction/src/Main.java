@@ -40,6 +40,8 @@ public class Main {
                 if(input.equalsIgnoreCase("3")) {
                     System.out.println("Enter Id: ");
                     int id = scanner.nextInt();
+                    scanner.nextLine();
+
                     System.out.println("Enter Name: ");
                     String name = scanner.nextLine();
 
