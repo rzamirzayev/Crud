@@ -1,7 +1,5 @@
 import java.sql.*;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Connenction {
     private String name="root";
@@ -12,6 +10,7 @@ public class Connenction {
     Scanner scanner=new Scanner(System.in);
     Connection con=null;
     Statement statement=null;
+    PreparedStatement preparedStatement=null;
     public Connenction(){
         String url = "jdbc:mysql://" + host + ":" + port + "/" +database_name+ "?useUnicode=true&characterEncoding=utf8";
 
@@ -33,24 +32,27 @@ public class Connenction {
 
     }
     public void AddPeople(String name,String surname){
+        String query = "Insert Into people (name,surname) VALUES(?,?)";
 
         try {
-            statement=con.createStatement();
-            String query = "Insert Into people (name,surname) VALUES(" + "'" + name + "'," + "'" + surname + "')";
-            statement.executeUpdate(query);
+            preparedStatement=con.prepareStatement(query);
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,surname);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
     public void EditPeople(int id,String name){
+        String query = "UPDATE people SET name=? WHERE id=?";
 
         try {
-            statement=con.createStatement();
-            String query = "UPDATE people SET name='" + name + "' WHERE id=" + id;
-
-            statement.executeUpdate(query);
+            preparedStatement=con.prepareStatement(query);
+            preparedStatement.setString(1,name);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
     public void showPeople() {
@@ -80,12 +82,14 @@ public class Connenction {
 
     }
     public void removePeople(int id){
+        String query = "DELETE FROM people WHERE id=?";
+
         try {
-            statement=con.createStatement();
-            String query = "DELETE FROM people WHERE id=" + id;
-            statement.executeUpdate(query);
+            preparedStatement=con.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
